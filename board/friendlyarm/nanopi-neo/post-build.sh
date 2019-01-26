@@ -10,3 +10,10 @@ BOOT_CMD_H="${BINARIES_DIR}/boot.scr"
 
 # U-Boot script
 "${MKIMAGE}" -C none -A arm -T script -d "${BOOT_CMD}" "${BOOT_CMD_H}"
+
+mkdir -p $TARGET_DIR/lib/firmware/ap6212
+cp ${BOARD_DIR}/brcmfmac43430-sdio.txt $TARGET_DIR/lib/firmware/brcm/brcmfmac43430-sdio.txt
+
+cp ${BOARD_DIR}/sshd_config $TARGET_DIR/etc/ssh/
+
+cp ${BOARD_DIR}/c304-2.wav $TARGET_DIR/root
