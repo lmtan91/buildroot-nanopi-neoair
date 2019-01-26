@@ -1,0 +1,105 @@
+diff --git a/arch/arm/boot/dts/sun8i-h3-nanopi-neo-air.dts b/arch/arm/boot/dts/sun8i-h3-nanopi-neo-air.dts
+index 6246d3e..b85cc70 100644
+--- a/arch/arm/boot/dts/sun8i-h3-nanopi-neo-air.dts
++++ b/arch/arm/boot/dts/sun8i-h3-nanopi-neo-air.dts
+@@ -52,6 +52,8 @@
+ 
+ 	aliases {
+ 		serial0 = &uart0;
++		i2s0 = &i2s0;
++		pcm5102a = &pcm5102a;
+ 	};
+ 
+ 	chosen {
+@@ -77,6 +79,29 @@
+ 		compatible = "mmc-pwrseq-simple";
+ 		reset-gpios = <&r_pio 0 7 GPIO_ACTIVE_LOW>; /* PL7 */
+ 	};
++
++	pcm5102a: pcm5102a-codec {
++                #sound-dai-cells = <0>;
++                compatible = "ti,pcm5102a";
++                status = "okay";
++        };
++
++        sound_i2s {
++                compatible = "simple-audio-card";
++                simple-audio-card,name = "I2S-master";
++                simple-audio-card,mclk-fs = <256>;
++                simple-audio-card,format = "i2s";
++                status = "okay";
++
++                simple-audio-card,cpu {
++                        sound-dai = <&i2s0>;
++                };
++
++                simple-audio-card,codec {
++                        sound-dai = <&pcm5102a>;
++                };
++        };
++
+ };
+ 
+ &mmc0 {
+@@ -113,3 +138,17 @@
+ 	/* USB VBUS is always on */
+ 	status = "okay";
+ };
++
++&i2s0 {
++        sound-dai = <&pcm5102a>;
++        status = "okay";
++};
++
++&codec {
++        allwinner,audio-routing =
++                "Line Out", "LINEOUT",
++                "MIC1", "Mic",
++                "Mic",  "MBIAS";
++        status = "okay";
++};
++
+diff --git a/arch/arm/boot/dts/sunxi-h3-h5.dtsi b/arch/arm/boot/dts/sunxi-h3-h5.dtsi
+index fc61313..239ecd4 100644
+--- a/arch/arm/boot/dts/sunxi-h3-h5.dtsi
++++ b/arch/arm/boot/dts/sunxi-h3-h5.dtsi
+@@ -401,6 +401,11 @@
+ 				drive-strength = <40>;
+ 			};
+ 
++			i2s0_pins: i2s0 {
++                                pins = "PA18", "PA19", "PA20", "PA21";
++                                function = "i2s0";
++                        };
++
+ 			i2c0_pins: i2c0 {
+ 				pins = "PA11", "PA12";
+ 				function = "i2c0";
+@@ -609,10 +614,14 @@
+ 			interrupts = <GIC_SPI 13 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&ccu CLK_BUS_I2S0>, <&ccu CLK_I2S0>;
+ 			clock-names = "apb", "mod";
+-			dmas = <&dma 3>, <&dma 3>;
+ 			resets = <&ccu RST_BUS_I2S0>;
++			pinctrl-names = "default";
++                        pinctrl-0 = <&i2s0_pins>;
++			dmas = <&dma 3>, <&dma 3>;
+ 			dma-names = "rx", "tx";
+ 			status = "disabled";
++			#address-cells = <1>;
++                        #size-cells = <0>;
+ 		};
+ 
+ 		i2s1: i2s@1c22400 {
+diff --git a/sound/soc/sunxi/Kconfig b/sound/soc/sunxi/Kconfig
+index 22408bc..d429d9b 100644
+--- a/sound/soc/sunxi/Kconfig
++++ b/sound/soc/sunxi/Kconfig
+@@ -32,6 +32,7 @@ config SND_SUN4I_I2S
+ 	tristate "Allwinner A10 I2S Support"
+ 	select SND_SOC_GENERIC_DMAENGINE_PCM
+ 	select REGMAP_MMIO
++	select SND_SOC_PCM5102A
+ 	help
+ 	  Say Y or M if you want to add support for codecs attached to
+ 	  the Allwinner A10 I2S. You will also need to select the
