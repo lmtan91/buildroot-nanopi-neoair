@@ -1,0 +1,58 @@
+diff --git a/arch/arm/boot/dts/sun8i-h3-nanopi-neo-air.dts b/arch/arm/boot/dts/sun8i-h3-nanopi-neo-air.dts
+index b85cc70..c9cc4a8 100644
+--- a/arch/arm/boot/dts/sun8i-h3-nanopi-neo-air.dts
++++ b/arch/arm/boot/dts/sun8i-h3-nanopi-neo-air.dts
+@@ -52,6 +52,7 @@
+ 
+ 	aliases {
+ 		serial0 = &uart0;
++		serial3 = &uart3;
+ 		i2s0 = &i2s0;
+ 		pcm5102a = &pcm5102a;
+ 	};
+@@ -80,6 +81,19 @@
+ 		reset-gpios = <&r_pio 0 7 GPIO_ACTIVE_LOW>; /* PL7 */
+ 	};
+ 
++/* not used
++	rfkill_bt {
++                compatible = "rfkill-gpio";
++                pinctrl-names = "default";
++                pinctrl-0 = <&bt_pwr_pin>;
++                reset-gpios = <&pio 6 13 GPIO_ACTIVE_HIGH>; 
++                clocks = <&osc32k>;
++                clock-frequency = <32768>;
++                rfkill-name = "sunxi-bt";
++                rfkill-type = "bluetooth";
++        };
++*/
++
+ 	pcm5102a: pcm5102a-codec {
+                 #sound-dai-cells = <0>;
+                 compatible = "ti,pcm5102a";
+@@ -128,12 +142,25 @@
+ 	};
+ };
+ 
++&pio {
++        bt_pwr_pin: bt_pwr_pin@0 {
++                pins = "PG13";
++                function = "gpio_out";
++        };
++};
++
+ &uart0 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&uart0_pins_a>;
+ 	status = "okay";
+ };
+ 
++&uart3 { /* Connected to AP6212 on Neo Air */
++        pinctrl-names = "default";
++        pinctrl-0 = <&uart3_pins>, <&uart3_rts_cts_pins>;
++        status = "okay";
++};
++
+ &usbphy {
+ 	/* USB VBUS is always on */
+ 	status = "okay";
