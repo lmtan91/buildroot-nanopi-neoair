@@ -25,5 +25,5 @@ hciattach /dev/ttyS3 bcm43xx 115200 flow bdaddr 43:29:B1:55:01:01
 aplay c304-2.wav  
 
 # Use full infomation  
-https://linux-sunxi.org/Mainline_U-Boot
+https://linux-sunxi.org/Mainline_U-Boot  
 https://linux-sunxi.org/DRAM_Controller
