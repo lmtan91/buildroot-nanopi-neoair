@@ -33,4 +33,9 @@ aplay c304-2.wav
 ```
 # Use full infomation  
 https://linux-sunxi.org/Mainline_U-Boot  
-https://linux-sunxi.org/DRAM_Controller
+https://linux-sunxi.org/DRAM_Controller  
+
+5. Linux patches:
+```
+https://github.com/lmtan91/buildroot-nanopi-neoair/tree/master/board/friendlyarm/nanopi-neo/linux-patches
+```
